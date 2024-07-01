@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This is the front facing script to control how MumbleUnity works.
  * It's expected that, to fit in properly with your application,
  * You'll want to change this class (and possible SendMumbleAudio)
@@ -6,10 +6,10 @@
  */
 using UnityEngine;
 using System;
-using Mumble.Editor;
 
 #if UNITY_EDITOR
 using UnityEditor;
+using Mumble.Editor;
 #endif
 using System.Collections;
 
