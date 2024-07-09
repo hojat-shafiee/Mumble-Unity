@@ -1,4 +1,4 @@
-﻿using MumbleProto;
+using MumbleProto;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -108,6 +108,7 @@ namespace Mumble
         // The mute that we're waiting to set
         // Either null, true, or false
         private bool? _pendingMute = null;
+        private bool? _pendingDeaf = null;
 
         private readonly DebugValues _debugValues;
         // TODO there are data structures that would be a lot faster here
@@ -434,7 +435,10 @@ namespace Mumble
             // Do the stuff we were waiting to do
             if (_pendingMute.HasValue)
                 SetSelfMute(_pendingMute.Value);
+            if (_pendingDeaf.HasValue)
+                SetSelfDeaf(_pendingDeaf.Value);
             _pendingMute = null;
+            _pendingDeaf = null;
         }
 
         internal void RemoveUser(uint removedUserSession)
@@ -716,7 +720,24 @@ namespace Mumble
             OurUserState.SelfMute = mute;
             _tcpConnection.SendMessage(MessageType.UserState, state);
         }
+        public void SetSelfDeaf(bool deaf)
+        {
+            if (OurUserState == null
+                || !ConnectionSetupFinished)
+            {
+                _pendingDeaf = deaf;
+                return;
+            }
+            _pendingDeaf = null;
 
+            UserState state = new()
+            {
+                SelfDeaf = deaf
+            };
+
+            OurUserState.Deaf = deaf;
+            _tcpConnection.SendMessage(MessageType.UserState, state);
+        }
         public bool IsSelfMuted()
         {
             // The default self mute is false
@@ -735,7 +756,24 @@ namespace Mumble
             Debug.Log("Our Self Mute is " + OurUserState.SelfMute);
             return OurUserState.SelfMute;
         }
+        public bool IsSelfDeaf()
+        {
+            // The default self mute is false
+            if (OurUserState == null)
+                return false;
 
+            if (_pendingDeaf.HasValue)
+            {
+                Debug.Log("Pending deaf: " + _pendingDeaf.HasValue);
+                return _pendingDeaf.Value;
+            }
+
+            if (!OurUserState.ShouldSerializeDeaf())
+                return false;
+
+            Debug.Log("Our Self Mute is " + OurUserState.SelfDeaf);
+            return OurUserState.SelfDeaf;
+        }
         public bool SetOurComment(string newComment)
         {
             if (OurUserState == null)
