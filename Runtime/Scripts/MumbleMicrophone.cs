@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace Mumble
 {
@@ -272,7 +272,7 @@ namespace Mumble
         {
             Debug.Log("Stopping sending audio");
             Microphone.End(_currentMic);
-            _mumbleClient.StopSendingVoice();
+            _mumbleClient?.StopSendingVoice();
             isRecording = false;
         }
 
