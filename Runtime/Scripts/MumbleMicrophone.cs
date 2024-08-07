@@ -51,8 +51,8 @@ namespace Mumble
         /// of the audio clip. Larger values seem to better
         /// hide this pop
         /// </summary>
-        //const int NumRecordingSeconds = 1;
-        const int NumRecordingSeconds = 5;
+        const int NumRecordingSeconds = 1;
+        //const int NumRecordingSeconds = 5;
         private int NumSamplesInMicBuffer
         {
             get
